@@ -4,44 +4,25 @@ from block import Block
 class Dot(QtGui.QDialog):
 
     def __init__(self, parent=None):
-
+        #Set Window color, borderless, position
         super(Dot, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setStyleSheet("background:#D06261")
         self.move(25, 820)
-       
-        #layout = QtGui.QVBoxLayout(self)
+        
+        #Set button size margins
         button = HoverButton(self)
         button.setStyleSheet("background:rgba(0,0,0,0); margin-left: -10px; margin-top: -10px")
         button.setIconSize(QtCore.QSize(90,90))
-
-        #layout.addWidget(button) 
-        #button.setStyleSheet("outline:none;")
-
-    def paintEvent(self, event):
-        side = min(self.width(), self.height())
         
+    def paintEvent(self, event):
+        '''Draws window'''
+        side = min(self.width(), self.height())
+        #Pen settings
         painter = QtGui.QPainter(self)
-        #painter.setFont(QtGui.QFont('kates', 5))
         painter.setFont(QtGui.QFont('artwiz cure', 15))
         painter.setPen('#222222')
               
         painter.drawText(event.rect(), QtCore.Qt.AlignCenter, " >< ")
-        #painter.setRenderHint(QtGui.QPainter.Antialiasing)
-        painter.translate(self.width() / 2, self.height() / 2)
-        painter.scale(side / 200.0, side / 200.0)
-        
-        #painter.setFont(QtGui.QFont('Arial', 50))
-        #painter.drawText(event.rect(), QtCore.Qt.AlignTop, "+")
-
-        painter.setPen(QtCore.Qt.NoPen)
-        
-        painter.save()
-        painter.restore()
-
-    def paintStatusEvent(self, event):
-        painter = QtGui.QPainter(self)
-        painter.setPen('#FFFFFF')
-
         painter.translate(self.width() / 2, self.height() / 2)
         painter.scale(side / 200.0, side / 200.0)
         
@@ -51,6 +32,7 @@ class Dot(QtGui.QDialog):
         painter.restore()
 
     def resizeEvent(self, event):
+        '''Gives window a clipping mask for transparency'''
         side = min(self.width(), self.height())
 
         maskedRegion = QtGui.QRegion(self.width()/2 - side/2, self.height()/2 - side/2, side, side, QtGui.QRegion.Ellipse)
@@ -68,11 +50,13 @@ class HoverButton(QtGui.QToolButton):
         self.setMouseTracking(True)
 
     def enterEvent(self,event):
+        '''Defines what happens on hover'''
         print("Enter")
         block.show()
         self.setStyleSheet("background:rgba(0,0,0,0); margin-left: -10px; margin-top: -10px")
 
     def leaveEvent(self,event):
+        '''Defines what happens on leave'''
         self.setStyleSheet("background:rgba(0,0,0,0); margin-left: -10px; margin-top: -10px")
         block.hide()
         print("Leave")
@@ -86,6 +70,7 @@ if __name__ == '__main__':
 
     block = Block()
     dot = Dot()
+    #Inherits a class to display information (there might be a better way to do this)
     button = HoverButton()
     
     dot.show()
