@@ -3,7 +3,6 @@ import datetime
 import calendar
 import psutil
 
-#Obtain status information
 battery = psutil.sensors_battery()
 plugged = battery.power_plugged
 percent = str(int(battery.percent))
@@ -13,19 +12,33 @@ now = datetime.datetime.now()
 
 yy= now.year
 mm = now.month
-
 class Block(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        
-        #Set Block style borderless, and position
+
         super(Block, self).__init__(parent, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.setStyleSheet("background:#FFFFFF")
+               
         self.move(50, 634) 
         self.resize(QtCore.QSize(180,210))
-
+        
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(self.update)
+        timer.start(1000)
+    
     def paintEvent(self, event):
-        '''Paints block'''
+
+        battery = psutil.sensors_battery()
+        plugged = battery.power_plugged
+        percent = str(int(battery.percent))
+        yourPercent =str("{}% battery".format(percent))
+
+        now = datetime.datetime.now()
+
+        yy= now.year
+        mm = now.month
+
+
         side = min(self.width(), self.height())
         
         painter = QtGui.QPainter(self)
@@ -52,8 +65,6 @@ if __name__ == '__main__':
     import sys
 
     app = QtGui.QApplication(sys.argv)
-
     block = Block()
-        
     block.show()
     sys.exit(app.exec_())
